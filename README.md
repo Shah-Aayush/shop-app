@@ -1,3 +1,3 @@
 # MyShop App
 
-App build with flutter.
+App built with flutter.
