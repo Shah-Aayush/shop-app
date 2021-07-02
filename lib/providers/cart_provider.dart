@@ -33,6 +33,10 @@ class CartProvider with ChangeNotifier {
   }
 
   void removeItem(String id) {
+    if (!_items.containsKey(id)) {
+      print('Item is not in the cart.');
+      return;
+    }
     _items.remove(id);
     notifyListeners();
   }

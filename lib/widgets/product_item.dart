@@ -108,8 +108,46 @@ class ProductItem extends StatelessWidget {
               onPressed: () {
                 if (cart.isPresentInCart(product.id)) {
                   cart.removeItem(product.id);
+
+                  //hide current snackbar message and show new snackbar.
+                  ScaffoldMessenger.of(context)
+                      .hideCurrentSnackBar(); //hiding snackbar
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    //showing new snackbar with action button
+                    SnackBar(
+                      content: Text(
+                        '${product.title} removed from the cart!',
+                      ),
+                      duration: Duration(seconds: 2),
+                      action: SnackBarAction(
+                        label: 'UNDO',
+                        onPressed: () {
+                          cart.addItem(
+                              product.id, product.price, product.title);
+                        },
+                      ),
+                    ),
+                  );
                 } else {
                   cart.addItem(product.id, product.price, product.title);
+                  // Scaffold.of(context).openDrawer(); //nearest scaffold has drawer then only it will open it.
+
+                  //hiding current snackbar and showing new snackbar message with undo action.
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        '${product.title} Added to the cart!',
+                      ),
+                      duration: Duration(seconds: 2),
+                      action: SnackBarAction(
+                        label: 'UNDO',
+                        onPressed: () {
+                          cart.removeItem(product.id);
+                        },
+                      ),
+                    ),
+                  );
                 }
               },
             ),
