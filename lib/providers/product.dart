@@ -21,4 +21,22 @@ class Product with ChangeNotifier {
     isFavorite = !isFavorite;
     notifyListeners(); //this is kind of stateState method in stateful widget.
   }
+
+  Product copyWith({
+    String? id,
+    String? title,
+    String? description,
+    double? price,
+    String? imageUrl,
+    bool? isFavorite,
+  }) {
+    return Product(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      price: price ?? this.price,
+      imageUrl: imageUrl ?? this.imageUrl,
+      isFavorite: isFavorite ?? this.isFavorite,
+    );
+  }
 }

@@ -61,17 +61,35 @@ class ProductsProvider with ChangeNotifier {
   }
 
   List<Product> get favoriteItems {
-    return _items.where((product) => product.isFavorite).toList(); 
+    return _items.where((product) => product.isFavorite).toList();
   }
 
-  // void addProduct(Product value) {
-  void addProduct() {
-    // _items.add(value);
+  void addProduct(Product newProduct) {
+    _items.add(newProduct);
+    // _items.insert(0,newProduct);    //insert product at beginning of the list
+
     notifyListeners(); //classes that are listening to this notifier will be changed when this method is called. the updates we are made will be changed to every class which are listening to this class/rebuild class.
+  }
+
+  void updateProduct(String id, Product newProduct) {
+    final prodIndex = _items.indexWhere((product) => product.id == id);
+    if (prodIndex >= 0) {
+      _items[prodIndex] = newProduct;
+      print(
+          'PRODUCT UPDATED WITH : ${newProduct.id} ${newProduct.title} ${newProduct.price} ${newProduct.description} ${newProduct.imageUrl} ${newProduct.isFavorite}');
+    } else {
+      print('product id is not found for updation.');
+    }
+    notifyListeners();
   }
 
   Product findById(String id) {
     return _items.firstWhere((product) => product.id == id);
+  }
+
+  void deleteProduct(String id) {
+    _items.removeWhere((product) => product.id == id);
+    notifyListeners();
   }
 
   // void showFavoritesOnly() {
