@@ -69,9 +69,61 @@ class ProductItem extends StatelessWidget {
               color: Theme.of(context).colorScheme.secondary,
               icon: Icon(
                   product.isFavorite ? Icons.favorite : Icons.favorite_border),
-              onPressed: () {
-                product.toggleFavoriteStatus();
+              onPressed: () async {
+                print('favorite status BEFORE : ${product.isFavorite}');
+                try {
+                  await product.toggleFavoriteStatus();
+                  print('succedd favorite try block');
+                } catch (error) {
+                  print('entered favorite catch block');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Icon(
+                            Icons.error,
+                            color: Theme.of(context).errorColor,
+                          ),
+                          Text(
+                            'Something went wrong!\nCould not favorite ${product.title}.',
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          topRight: Radius.circular(15),
+                        ),
+                      ),
+                    ),
+                  );
+                  print(
+                      'ERROR OCCURRED WHILE FAVORATING : {$error.toString()}');
+                }
+                print('favorite status AFTER : ${product.isFavorite}');
               },
+              // onPressed: () async {
+              //   try {
+              //     await product.toggleFavoriteStatus();
+              //   } catch (error) {
+              //     ScaffoldMessenger.of(context).showSnackBar(
+              //       SnackBar(
+              //         content: Text(
+              //           'Something went wrong!',
+              //           textAlign: TextAlign.center,
+              //         ),
+              //         shape: RoundedRectangleBorder(
+              //           borderRadius: BorderRadius.only(
+              //             topLeft: Radius.circular(15),
+              //             topRight: Radius.circular(15),
+              //           ),
+              //         ),
+              //       ),
+              //     );
+              //   }
+              // },
               //here we can use child arugment which will not rebuild/changes but as we don't need it we will not.
             ),
             // child: Text('Never Changes!'), //Here this child argument is the argument which will not changes when we use it in that builder function.

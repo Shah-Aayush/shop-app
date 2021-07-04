@@ -20,86 +20,67 @@ class CartScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Your Cart'),
       ),
-      body: (cart.itemCount == 0)
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+      body: Column(
+        children: [
+          Card(
+            margin: EdgeInsets.all(15),
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Lottie.asset(
-                    './assets/animations/empty_box.json',
-                    repeat: false,
-                  ),
                   Text(
-                    'Not added any items yet.',
-                    style: TextStyle(
-                      fontSize: 30,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                  Text(
-                    'Start adding some!',
+                    'Total',
                     style: TextStyle(
                       fontSize: 20,
-                      color: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
+                  Spacer(), //acquire spaces which is remaining.
+                  Chip(
+                    label: Text(
+                      '\$${double.parse((cart.totalAmount).toStringAsFixed(2))}',
+                      style: TextStyle(
+                        color:
+                            Theme.of(context).primaryTextTheme.headline6!.color,
+                      ),
+                    ),
+                    backgroundColor: Theme.of(context).primaryColor,
+                  ),
+                  OrderButton(cart: cart),
                 ],
               ),
-            )
-          : Column(
-              children: [
-                Card(
-                  margin: EdgeInsets.all(15),
-                  child: Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Total',
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          (cart.itemCount == 0)
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Lottie.asset(
+                        './assets/animations/empty_box.json',
+                        repeat: false,
+                      ),
+                      Text(
+                        'Not added any items yet.',
+                        style: TextStyle(
+                          fontSize: 30,
+                          color: Theme.of(context).primaryColor,
                         ),
-                        Spacer(), //acquire spaces which is remaining.
-                        Chip(
-                          label: Text(
-                            '\$${double.parse((cart.totalAmount).toStringAsFixed(2))}',
-                            style: TextStyle(
-                              color: Theme.of(context)
-                                  .primaryTextTheme
-                                  .headline6!
-                                  .color,
-                            ),
-                          ),
-                          backgroundColor: Theme.of(context).primaryColor,
+                      ),
+                      Text(
+                        'Start adding some!',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Theme.of(context).colorScheme.secondary,
                         ),
-                        TextButton(
-                          onPressed: () {
-                            Provider.of<OrdersProviders>(context,
-                                    listen:
-                                        false) //listen false because we don't want to change this cart screen on order placing.
-                                .addOrder(cart.items.values.toList(),
-                                    cart.totalAmount);
-                            cart.clearCart();
-                          },
-                          child: Text(
-                            'ORDER NOW',
-                          ),
-                          style: TextButton.styleFrom(
-                            textStyle: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Expanded(
+                )
+              : Expanded(
                   child: ListView.builder(
                     itemBuilder: (ctx, i) => CartItem(
                       cart.items.values.toList()[i].id,
@@ -115,8 +96,55 @@ class CartScreen extends StatelessWidget {
                     itemCount: cart.itemCount,
                   ),
                 ),
-              ],
+        ],
+      ),
+    );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  const OrderButton({
+    Key? key,
+    required this.cart,
+  }) : super(key: key);
+
+  final CartProvider cart;
+
+  @override
+  State<OrderButton> createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  var _isLoading = false;
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: (widget.cart.itemCount == 0 || _isLoading)
+          ? null
+          : () async {
+              setState(() {
+                _isLoading = true;
+              });
+              await Provider.of<OrdersProviders>(context,
+                      listen:
+                          false) //listen false because we don't want to change this cart screen on order placing.
+                  .addOrder(widget.cart.items.values.toList(),
+                      widget.cart.totalAmount);
+              setState(() {
+                _isLoading = false;
+              });
+              widget.cart.clearCart();
+            },
+      child: _isLoading
+          ? CircularProgressIndicator()
+          : Text(
+              'ORDER NOW',
             ),
+      style: TextButton.styleFrom(
+        textStyle: TextStyle(
+          color: Theme.of(context).primaryColor,
+        ),
+      ),
     );
   }
 }

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
-// import '../providers/products_provider.dart';
 import '../widgets/products_grid.dart';
 import '../widgets/badge.dart';
 import '../widgets/app_drawer.dart';
 import '../providers/cart_provider.dart';
+import '../providers/products_provider.dart';
 import '../screens/cart_screen.dart';
 
 enum FilterOptions {
@@ -20,6 +21,36 @@ class ProductsOverviewScreen extends StatefulWidget {
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   var _showOnlyFavorites = false;
+  var _isInit = true;
+  var _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Provider.of<ProductsProvider>(context).fetchAndSetProducts();  //this will not work as it requires context and its listen is set to true by default.
+    // Provider.of<ProductsProvider>(context,listen:false).fetchAndSetProducts();  //this will work as we set the listen is true.
+
+    //this is one of the working approach //this is kind of a heck!!
+    // Future.delayed(Duration.zero).then((_) {
+    //   Provider.of<ProductsProvider>(context).fetchAndSetProducts();
+    // });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<ProductsProvider>(context).fetchAndSetProducts().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +102,33 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
         ],
       ),
       drawer: AppDrawer(),
-      body: ProductsGrid(_showOnlyFavorites),
+      body: _isLoading
+          ? SingleChildScrollView(
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Lottie.asset(
+                        'assets/animations/loading_paperplane.json',
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        // height: 400,
+                      ),
+                      Text(
+                        'Fetching products...',
+                        style: TextStyle(
+                          fontSize: 30,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          : ProductsGrid(_showOnlyFavorites),
     );
   }
 }

@@ -31,6 +31,7 @@ dependencies:
   provider: ^5.0.0
   lottie: ^1.0.1
   intl: ^0.17.0
+  http: ^0.13.3
 
 dev_dependencies:
   flutter_test:
@@ -52,6 +53,7 @@ flutter:
     - assets/images/product-placeholder.png
     - assets/images/error-placeholder.png
     - assets/animations/empty_box.json
+    - assets/animations/loading_paperplane.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

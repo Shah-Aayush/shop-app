@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart'; //ChangeNotifier is located in this or foundation .dart
+import 'package:http/http.dart' as http;
+
+import '../models/http_exception.dart';
 
 class Product with ChangeNotifier {
   final String id;
@@ -17,9 +22,30 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  void toggleFavoriteStatus() {
+  Future<void> toggleFavoriteStatus() async {
+    print('favorite toggle pressed.CURRENT status : $isFavorite.');
+    final url = Uri.https('myshop-theflutterapp-default-rtdb.firebaseio.com',
+        '/products/$id.json');
+    final oldStatus = isFavorite;
     isFavorite = !isFavorite;
-    notifyListeners(); //this is kind of stateState method in stateful widget.
+    notifyListeners();
+    print('temp status updated.');
+    try {
+      final response = await http.patch(url,
+          body: json.encode({
+            'isFavorite': isFavorite,
+          }));
+      if (response.statusCode >= 400) {
+        throw HttpException('Could not favorite the item.');
+      }
+      print('favorite operation succeed.');
+    } catch (error) {
+      print('favorite operation failed.');
+      isFavorite = oldStatus;
+      notifyListeners();
+      throw error;
+    }
+    print('UPDATED status : $isFavorite');
   }
 
   Product copyWith({
@@ -40,3 +66,32 @@ class Product with ChangeNotifier {
     );
   }
 }
+
+
+/*
+//OLD TOGGLE : 
+
+    // try {
+    //   //server updation :
+    //   await http.patch(url,
+    //       body: json.encode({
+    //         'title': title,
+    //         'description': description,
+    //         'price': price,
+    //         'imageUrl': imageUrl,
+    //         'isFavorite': !isFavorite,
+    //       }));
+
+    //   //local updation :
+    //   isFavorite = !isFavorite;
+    //   notifyListeners();
+    // } catch (error) {
+    //   print(
+    //       'AN ERROR OCCURRED WHILE FAVORATING THE PRODUCT : ${error.toString()}');
+    //   throw error;
+    // }
+    // print(
+    //     'PRODUCT UPDATED WITH : ${newProduct.id} ${newProduct.title} ${newProduct.price} ${newProduct.description} ${newProduct.imageUrl} ${newProduct.isFavorite}');
+
+    // notifyListeners(); //this is kind of stateState method in stateful widget.
+*/
