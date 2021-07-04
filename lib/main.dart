@@ -111,3 +111,12 @@ return ChangeNotifierProvider(
       ),
     );
 */
+
+/*
+// NEW VERSION OF HTTPS : 
+  final url = Uri.parse('https://flutter-update.firebaseio.com/products.json')
+  http.post(url, ...)
+// Alternatively, you can also use this syntax:
+  final url = Uri.https('flutter-update.firebaseio.com', '/products.json')
+  http.post(url, ...)
+*/

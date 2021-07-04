@@ -52,7 +52,7 @@ class UserProductItem extends StatelessWidget {
                             Navigator.of(ctx).pop();
                             Provider.of<ProductsProvider>(context,
                                     listen: false)
-                                .deleteProduct(id);
+                                .deleteProduct(context, id);
                           },
                           child: Text('YES')),
                     ],
@@ -76,7 +76,7 @@ class UserProductItem extends StatelessWidget {
                             Navigator.of(ctx).pop();
                             Provider.of<ProductsProvider>(context,
                                     listen: false)
-                                .deleteProduct(id);
+                                .deleteProduct(context, id);
                           },
                           child: Text('YES')),
                     ],
