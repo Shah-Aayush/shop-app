@@ -39,6 +39,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     description: '',
     price: 0,
     imageUrl: '',
+    seller:'',
   );
 
   var _isInit = true;
@@ -47,6 +48,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     'price': '',
     'description': '',
     'imageUrl': '',
+    'seller': '',
   };
   var _isLoading = false;
 
@@ -80,6 +82,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           'price': _editedProduct.price.toString(),
           'description': _editedProduct.description,
           'imageUrl': _editedProduct.imageUrl,
+          'seller': _editedProduct.seller,
         };
         imageUrlInputValue = _initValues['imageUrl'] as String;
       }
@@ -209,7 +212,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
       _editedProduct = _editedProduct.copyWith(id: id);
       try {
         await Provider.of<ProductsProvider>(context, listen: false)
-            .addProduct(_editedProduct);
+            .addProduct(_editedProduct, context);
         setState(() {
           _isLoading = false;
         });
@@ -364,7 +367,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     children: [
                       Lottie.asset(
                         'assets/animations/loading_paperplane.json',
-                       width: MediaQuery.of(context).size.width / 1.5,
+                        width: MediaQuery.of(context).size.width / 1.5,
                       ),
                       // CircularProgressIndicator(), //old method
                       // SizedBox(

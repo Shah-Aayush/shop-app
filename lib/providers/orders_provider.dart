@@ -9,6 +9,10 @@ import '../models/cart_item.dart';
 class OrdersProviders with ChangeNotifier {
   List<OrderItem> _orders = [];
 
+  final String? authToken;
+  final String? userId;
+  OrdersProviders(this.authToken, this.userId, this._orders);
+
   List<OrderItem> get orders {
     return [
       ..._orders
@@ -16,8 +20,13 @@ class OrdersProviders with ChangeNotifier {
   }
 
   Future<void> fetchAndSetOrders() async {
-    final url = Uri.https(
-        'myshop-theflutterapp-default-rtdb.firebaseio.com', '/orders.json');
+    var _params = {
+      'auth': authToken,
+    };
+    final url = Uri.https('myshop-theflutterapp-default-rtdb.firebaseio.com',
+        '/orders/$userId.json', _params);
+    // final url = Uri.https('myshop-theflutterapp-default-rtdb.firebaseio.com',
+    //     '/orders.json', _params);
     final response = await http.get(url);
     // print('received orders : ${json.decode(response.body)}');
     final List<OrderItem> loadedOrders = [];
@@ -56,8 +65,11 @@ class OrdersProviders with ChangeNotifier {
   }
 
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
-    final url = Uri.https(
-        'myshop-theflutterapp-default-rtdb.firebaseio.com', '/orders.json');
+    var _params = {
+      'auth': authToken,
+    };
+    final url = Uri.https('myshop-theflutterapp-default-rtdb.firebaseio.com',
+        '/orders/$userId.json', _params);
     final timestamp = DateTime.now();
     final response = await http.post(url,
         body: json.encode({
@@ -72,6 +84,7 @@ class OrdersProviders with ChangeNotifier {
                   })
               .toList(),
         }));
+    print('recieved response for adding order : ${response.body}');
     _orders.insert(
       0,
       OrderItem(

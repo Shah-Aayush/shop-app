@@ -6,6 +6,9 @@ import './screens/product_detail_screen.dart';
 import './screens/cart_screen.dart';
 import './screens/orders_screen.dart';
 import './screens/edit_product_screen.dart';
+import './screens/animated_auth_screen.dart';
+import './screens/splash_screen.dart';
+import './providers/auth.dart';
 import './providers/products_provider.dart';
 import './providers/cart_provider.dart';
 import './providers/orders_provider.dart';
@@ -22,33 +25,79 @@ class MyApp extends StatelessWidget {
       //when we want to listen to multiple providers.
       providers: [
         ChangeNotifierProvider(
-          create: (ctx) => ProductsProvider(),
+          create: (ctx) => Auth(),
         ),
+        ChangeNotifierProxyProvider<Auth, ProductsProvider>(
+          update: (ctx, auth, previousProducts) => previousProducts!
+            ..updateUser(auth.token, auth.userId),
+          create: (ctx) => ProductsProvider(null, null, []),
+        ),
+
+        //older approach which is not working after auto authentication user.
+        // ChangeNotifierProxyProvider<Auth, ProductsProvider>(
+        //   update: (ctx, auth, previousProducts) => ProductsProvider(
+        //     auth.token,
+        //     auth.userId,
+        //     previousProducts == null ? [] : previousProducts.items,
+        //     // auth.token as String,
+        //     // auth.userId as String,
+        //     // previousProducts == null ? [] : previousProducts.items,
+        //   ), //depends on another provider
+        //   create: (ctx) => ProductsProvider(null, null, []),
+        // ),
+        // ChangeNotifierProvider(
+        //   create: (ctx) => ProductsProvider(),
+        // ),
+
         ChangeNotifierProvider(
           create: (ctx) => CartProvider(),
         ),
-        ChangeNotifierProvider(
-          create: (ctx) => OrdersProviders(),
+        ChangeNotifierProxyProvider<Auth, OrdersProviders>(
+          update: (ctx, auth, previousOrders) => OrdersProviders(
+            auth.token,
+            auth.userId,
+            previousOrders == null ? [] : previousOrders.orders,
+          ),
+          create: (ctx) => OrdersProviders(null, null, []),
         ),
+        // ChangeNotifierProvider(
+        //   create: (ctx) => OrdersProviders(),
+        // ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'MyShop',
-        theme: ThemeData(
-          primarySwatch: Colors.purple,
-          colorScheme: Theme.of(context)
-              .colorScheme
-              .copyWith(secondary: Colors.deepOrange),
-          fontFamily: 'Lato',
+      child: Consumer<Auth>(
+        //only this part will be rebuild. so whenever that AUTH object changes, this material app widget will be rebuild.
+        builder: (ctx, auth, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'MyShop',
+          theme: ThemeData(
+            primarySwatch: Colors.purple,
+            colorScheme: Theme.of(context)
+                .colorScheme
+                .copyWith(secondary: Colors.deepOrange),
+            fontFamily: 'Lato',
+          ),
+          home: auth.isAuth
+              ? ProductsOverviewScreen()
+              : FutureBuilder(
+                  future: auth.tryAutoLogin(),
+                  builder: (ctx, authResultSnapshot) =>
+                      authResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? SplashScreen()
+                          : auth.isAuth
+                              ? ProductsOverviewScreen()
+                              : AnimatedAuthScreen(),
+                ),
+          // home: AuthScreen(),
+          // home: ProductsOverviewScreen(),
+          routes: {
+            ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+            CartScreen.routeName: (ctx) => CartScreen(),
+            OrdersScreen.routeName: (ctx) => OrdersScreen(),
+            UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
+            EditProductScreen.routeName: (ctx) => EditProductScreen(),
+          },
         ),
-        home: ProductsOverviewScreen(),
-        routes: {
-          ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
-          CartScreen.routeName: (ctx) => CartScreen(),
-          OrdersScreen.routeName: (ctx) => OrdersScreen(),
-          UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
-          EditProductScreen.routeName: (ctx) => EditProductScreen(),
-        },
       ),
     );
   }

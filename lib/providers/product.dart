@@ -11,6 +11,7 @@ class Product with ChangeNotifier {
   final String description;
   final double price;
   final String imageUrl;
+  final String seller;
   bool isFavorite;
 
   Product({
@@ -19,22 +20,29 @@ class Product with ChangeNotifier {
     required this.description,
     required this.price,
     required this.imageUrl,
+    required this.seller,
     this.isFavorite = false,
   });
 
-  Future<void> toggleFavoriteStatus() async {
+  Future<void> toggleFavoriteStatus(String authToken, String userId) async {
     print('favorite toggle pressed.CURRENT status : $isFavorite.');
+    var _params = {
+      'auth': authToken,
+    };
     final url = Uri.https('myshop-theflutterapp-default-rtdb.firebaseio.com',
-        '/products/$id.json');
+        '/userFavorites/$userId/$id.json', _params);
+    // final url = Uri.https('myshop-theflutterapp-default-rtdb.firebaseio.com',
+    //     '/products/$id.json', _params);
     final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
     print('temp status updated.');
     try {
-      final response = await http.patch(url,
-          body: json.encode({
-            'isFavorite': isFavorite,
-          }));
+      final response = await http.put(url, body: json.encode(isFavorite));
+      // final response = await http.patch(url,
+      //     body: json.encode({
+      //       'isFavorite': isFavorite,
+      //     }));
       if (response.statusCode >= 400) {
         throw HttpException('Could not favorite the item.');
       }
@@ -55,6 +63,7 @@ class Product with ChangeNotifier {
     double? price,
     String? imageUrl,
     bool? isFavorite,
+    String? seller,
   }) {
     return Product(
       id: id ?? this.id,
@@ -63,6 +72,7 @@ class Product with ChangeNotifier {
       price: price ?? this.price,
       imageUrl: imageUrl ?? this.imageUrl,
       isFavorite: isFavorite ?? this.isFavorite,
+      seller: seller ?? this.seller,
     );
   }
 }

@@ -32,6 +32,8 @@ dependencies:
   lottie: ^1.0.1
   intl: ^0.17.0
   http: ^0.13.3
+  flutter_svg: ^0.22.0
+  shared_preferences: ^2.0.6
 
 dev_dependencies:
   flutter_test:
@@ -52,8 +54,13 @@ flutter:
   assets:
     - assets/images/product-placeholder.png
     - assets/images/error-placeholder.png
+    - assets/images/shop-logo.png
     - assets/animations/empty_box.json
     - assets/animations/loading_paperplane.json
+    - assets/animations/login.json
+    - assets/animations/register.json
+    - assets/svgs/login.svg
+    - assets/svgs/register.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
