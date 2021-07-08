@@ -13,6 +13,7 @@ import './providers/products_provider.dart';
 import './providers/cart_provider.dart';
 import './providers/orders_provider.dart';
 import './screens/user_products_screen.dart';
+import './helpers/custom_route.dart';
 
 void main() {
   runApp(MyApp());
@@ -28,8 +29,8 @@ class MyApp extends StatelessWidget {
           create: (ctx) => Auth(),
         ),
         ChangeNotifierProxyProvider<Auth, ProductsProvider>(
-          update: (ctx, auth, previousProducts) => previousProducts!
-            ..updateUser(auth.token, auth.userId),
+          update: (ctx, auth, previousProducts) =>
+              previousProducts!..updateUser(auth.token, auth.userId),
           create: (ctx) => ProductsProvider(null, null, []),
         ),
 
@@ -75,6 +76,13 @@ class MyApp extends StatelessWidget {
                 .colorScheme
                 .copyWith(secondary: Colors.deepOrange),
             fontFamily: 'Lato',
+            //Page transition setting by default :
+            pageTransitionsTheme: PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android: CustomPageTransitionBuilder(),
+                TargetPlatform.iOS: CustomPageTransitionBuilder(),
+              },
+            ),
           ),
           home: auth.isAuth
               ? ProductsOverviewScreen()
@@ -116,7 +124,6 @@ class MyApp extends StatelessWidget {
 //     );
 //   }
 // }
-
 
 /*
 CHANGE NOTIFIER BEFORE : 
