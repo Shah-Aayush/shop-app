@@ -60,6 +60,18 @@ class ProductDetailScreen extends StatelessWidget {
                 softWrap: true, //wraps in new line if there is no space.
               ),
             ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              width: double.infinity,
+              child: Text(
+                'Seller : ${loadedProduct.seller}',
+                textAlign: TextAlign.center,
+                softWrap: true, //wraps in new line if there is no space.
+              ),
+            ),
           ],
         ),
       ),

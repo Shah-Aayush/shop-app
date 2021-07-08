@@ -4,9 +4,11 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 import './product.dart';
 import '../models/http_exception.dart';
+import '../providers/auth.dart';
 
 class ProductsProvider with ChangeNotifier {
   //mixin can be added with 'with' keyword which is used to merge some properties to existing class. bit like Inheritance lite.
@@ -57,6 +59,10 @@ class ProductsProvider with ChangeNotifier {
 
   // var _showFavoritesOnly = false;
 
+  String? authToken;
+  String? userId;
+  ProductsProvider(this.authToken, this.userId, this._items);
+
   List<Product> get items {
     // if (_showFavoritesOnly) {
     //   return _items.where((product) => product.isFavorite).toList();
@@ -70,9 +76,14 @@ class ProductsProvider with ChangeNotifier {
     return _items.where((product) => product.isFavorite).toList();
   }
 
-  Future<void> addProduct(Product newProduct) async {
-    final url = Uri.https(
-        'myshop-theflutterapp-default-rtdb.firebaseio.com', '/products.json');
+  Future<void> addProduct(Product newProduct, BuildContext context) async {
+    var authData = Provider.of<Auth>(context, listen: false);
+    print('new product is added of .${authData.displayName}.');
+    var _params = {
+      'auth': authToken,
+    };
+    final url = Uri.https('myshop-theflutterapp-default-rtdb.firebaseio.com',
+        '/products.json', _params);
     try {
       final response = await http.post(
         url,
@@ -81,7 +92,9 @@ class ProductsProvider with ChangeNotifier {
           'description': newProduct.description,
           'price': newProduct.price,
           'imageUrl': newProduct.imageUrl,
-          'isFavorite': newProduct.isFavorite,
+          'seller': authData.displayName as String,
+          'creatorId': userId,
+          // 'isFavorite': newProduct.isFavorite,
         }),
       );
       print(json.decode(response.body));
@@ -92,6 +105,7 @@ class ProductsProvider with ChangeNotifier {
         description: newProduct.description,
         price: newProduct.price,
         imageUrl: newProduct.imageUrl,
+        seller: authData.displayName as String,
       );
 
       _items.add(newProduct);
@@ -102,12 +116,15 @@ class ProductsProvider with ChangeNotifier {
     }
 
     print(
-        'PRODUCT ADDED to FIREBASE : ${newProduct.id} ${newProduct.title} ${newProduct.price} ${newProduct.description} ${newProduct.imageUrl} ${newProduct.isFavorite}');
+        'PRODUCT ADDED to FIREBASE : ${newProduct.id} ${newProduct.title} ${newProduct.price} ${newProduct.description} ${newProduct.imageUrl} ${newProduct.isFavorite} \nof SELLER : ${newProduct.seller}');
   }
 
   Future<void> updateProduct(String id, Product newProduct) async {
+    var _params = {
+      'auth': authToken,
+    };
     final url = Uri.https('myshop-theflutterapp-default-rtdb.firebaseio.com',
-        '/products/$id.json');
+        '/products/$id.json', _params);
     try {
       //server updation :
       await http.patch(url,
@@ -185,8 +202,11 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<void> deleteProduct(BuildContext context, String id) async {
+    var _params = {
+      'auth': authToken,
+    };
     final url = Uri.https('myshop-theflutterapp-default-rtdb.firebaseio.com',
-        '/products/$id.json');
+        '/products/$id.json', _params);
 
     //save product which is to be deleted.
     final existingProductIndex =
@@ -214,20 +234,81 @@ class ProductsProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchAndSetProducts() async {
-    final url = Uri.https(
-        'myshop-theflutterapp-default-rtdb.firebaseio.com', '/products.json');
+  void updateUser(String? token, String? id) {
+    userId = id;
+    authToken = token;
+    notifyListeners();
+  }
 
+  Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
+    //this filterByUser is optional argument
+    print('Products data extraction process : 1');
+    // final fullURL = 'myshop-theflutterapp-default-rtdb.firebaseio.com',
+    //     '/products.json?auth=';
+
+    //not used this var.
+    // var _params = {
+    //   'auth': authToken,
+    // };
+
+    // var url = Uri.https(
+    //   'myshop-theflutterapp-default-rtdb.firebaseio.com',
+    //   '/products.json',
+    //   {
+    //     'auth': '$authToken',
+    //     'groupBy': 'creatorId',
+    //     'equalTo': userId,
+    //   },
+    // );
+
+    var url = Uri.https(
+      'myshop-theflutterapp-default-rtdb.firebaseio.com',
+      '/products.json',
+      filterByUser
+          ? {
+              'auth': '$authToken',
+              'orderBy': json.encode("creatorId"),
+              'equalTo': json.encode(userId),
+            }
+          : {'auth': '$authToken'},
+    );
+    print('URL GENERATED : $authToken $userId');
+    // var url = Uri.https('myshop-theflutterapp-default-rtdb.firebaseio.com',
+    //     '/products.json', _params);
+    // final url = Uri.parse(
+    //     'myshop-theflutterapp-default-rtdb.firebaseio.com/products.json?auth=$authToken');
+
+    print('Products data extraction process : 2');
     try {
       final response = await http.get(url);
+      print('Products data extraction process : 3');
       print(json.decode(response.body));
+      print('Recieved : ${response.body}');
       var extractedData;
+      var favoriteData;
       try {
+        print('inside nested try');
+        // extractedData =
+        //     json.decode(json.encode(response.body)) as Map<String, dynamic>;
+        print('extracting products...');
         extractedData = json.decode(response.body) as Map<String, dynamic>;
+
+        //isFavorite data fetching section :
+        var _params = {
+          'auth': authToken,
+        };
+        url = Uri.https('myshop-theflutterapp-default-rtdb.firebaseio.com',
+            '/userFavorites/$userId.json', _params);
+        final favoriteResponse = await http.get(url);
+        print('favorite section fetched : ${favoriteResponse.body}');
+        favoriteData = json.decode(favoriteResponse.body);
+
+        print('successfully extracted data.');
       } catch (error) {
         print('Products data not found.');
         return;
       }
+      print('Products data extraction process : 4');
 
       print('\n\nextracted data : $extractedData');
       final List<Product> loadedProducts = [];
@@ -242,14 +323,21 @@ class ProductsProvider with ChangeNotifier {
               description: productData['description'],
               price: productData['price'],
               imageUrl: productData['imageUrl'],
-              isFavorite: productData['isFavorite'],
+              seller: productData['seller'] ?? 'no seller found',
+              isFavorite: favoriteData == null
+                  ? false
+                  : favoriteData[productId] ??
+                      false, //if value before ?? is NOT NULL => this expression will use the value before ??. Otherwise, it will use the value after ??.
             ),
           );
         },
       );
       _items = loadedProducts;
       notifyListeners();
+      print('successful fetching!');
     } catch (error) {
+      print('UNsuccessful fetching!');
+      print('this is the error message : $error.');
       throw (error);
     }
   }
