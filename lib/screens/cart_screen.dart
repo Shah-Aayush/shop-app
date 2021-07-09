@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:lottie/lottie.dart';
@@ -59,10 +62,17 @@ class CartScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Lottie.asset(
-                        './assets/animations/empty_box.json',
-                        repeat: false,
-                      ),
+                      if (MediaQuery.of(context).orientation ==
+                          Orientation.portrait)
+                        Lottie.asset(
+                          './assets/animations/empty_box.json',
+                          repeat: false,
+                        ),
+                      if (MediaQuery.of(context).orientation ==
+                          Orientation.landscape)
+                        Lottie.asset('./assets/animations/empty_box.json',
+                            repeat: false,
+                            height: MediaQuery.of(context).size.height / 3),
                       Text(
                         'Not added any items yet.',
                         style: TextStyle(
@@ -136,7 +146,9 @@ class _OrderButtonState extends State<OrderButton> {
               widget.cart.clearCart();
             },
       child: _isLoading
-          ? CircularProgressIndicator()
+          ? ((Platform.isAndroid)
+              ? CircularProgressIndicator()
+              : CupertinoActivityIndicator())
           : Text(
               'ORDER NOW',
             ),

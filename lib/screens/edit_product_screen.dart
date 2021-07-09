@@ -39,7 +39,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     description: '',
     price: 0,
     imageUrl: '',
-    seller:'',
+    seller: '',
   );
 
   var _isInit = true;
@@ -334,54 +334,30 @@ class _EditProductScreenState extends State<EditProductScreen> {
         ],
       ),
       body: _isLoading
-          ? SingleChildScrollView(
-              child: Center(
-                // child: Stack(
-                //   alignment: Alignment.center,
-                //   children: [
-                //     Lottie.asset(
-                //       'assets/animations/loading_paperplane.json',
-                //       // height: 300,
-                //     ),
-                //     Positioned(
-                //       bottom: (MediaQuery.of(context).orientation ==
-                //               Orientation.portrait)
-                //           ? MediaQuery.of(context).size.height / 20
-                //           : MediaQuery.of(context).size.height / 8,
-                //       child: Text(
-                //         'Adding ${_editedProduct.title}...',
-                //         style: TextStyle(
-                //           fontSize: 30,
-                //           color: Theme.of(context).primaryColor,
-                //         ),
-                //       ),
-                //     ),
-                //   ],
-                // ),
-
-                child: Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Lottie.asset(
+          ? Center(
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      flex: 1,
+                      child: Lottie.asset(
                         'assets/animations/loading_paperplane.json',
-                        width: MediaQuery.of(context).size.width / 1.5,
                       ),
-                      // CircularProgressIndicator(), //old method
-                      // SizedBox(
-                      //   height: 10,
-                      // ),
-                      Text(
+                    ),
+                    Flexible(
+                      flex: 1,
+                      child: Text(
                         '${(_isNewProduct) ? 'Adding' : 'Updating'} ${_editedProduct.title}...',
                         style: TextStyle(
                           fontSize: 30,
                           color: Theme.of(context).primaryColor,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             )
@@ -796,4 +772,59 @@ void _saveForm(String id) {
         'Submitted this : ${_editedProduct.id} ${_editedProduct.title} ${_editedProduct.description} ${_editedProduct.imageUrl} ${_editedProduct.isFavorite}');
     // Navigator.of(context).pop();
   }
+*/
+
+/*
+old loading body: 
+SingleChildScrollView(
+              child: Center(
+                // child: Stack(
+                //   alignment: Alignment.center,
+                //   children: [
+                //     Lottie.asset(
+                //       'assets/animations/loading_paperplane.json',
+                //       // height: 300,
+                //     ),
+                //     Positioned(
+                //       bottom: (MediaQuery.of(context).orientation ==
+                //               Orientation.portrait)
+                //           ? MediaQuery.of(context).size.height / 20
+                //           : MediaQuery.of(context).size.height / 8,
+                //       child: Text(
+                //         'Adding ${_editedProduct.title}...',
+                //         style: TextStyle(
+                //           fontSize: 30,
+                //           color: Theme.of(context).primaryColor,
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
+
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Lottie.asset(
+                        'assets/animations/loading_paperplane.json',
+                        width: MediaQuery.of(context).size.width / 1.5,
+                      ),
+                      // CircularProgressIndicator(), //old method
+                      // SizedBox(
+                      //   height: 10,
+                      // ),
+                      Text(
+                        '${(_isNewProduct) ? 'Adding' : 'Updating'} ${_editedProduct.title}...',
+                        style: TextStyle(
+                          fontSize: 30,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
 */

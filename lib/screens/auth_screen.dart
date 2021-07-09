@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 enum AuthMode { Signup, Login }
@@ -207,7 +209,10 @@ class _AuthCardState extends State<AuthCard> {
                   height: 20,
                 ),
                 if (_isLoading)
-                  CircularProgressIndicator()
+                  if (Platform.isAndroid)
+                    CircularProgressIndicator()
+                  else
+                    CupertinoActivityIndicator()
                 else
                   ElevatedButton(
                     child:

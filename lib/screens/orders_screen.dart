@@ -42,27 +42,30 @@ class _OrdersScreenState extends State<OrdersScreen> {
         future: _orderFuture,
         builder: (ctx, dataSnapShot) {
           if (dataSnapShot.connectionState == ConnectionState.waiting) {
-            return SingleChildScrollView(
-              child: Center(
-                child: Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Lottie.asset(
+            return Center(
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      flex: 1,
+                      child: Lottie.asset(
                         'assets/animations/loading_paperplane.json',
-                        width: MediaQuery.of(context).size.width / 1.5,
                       ),
-                      Text(
+                    ),
+                    Flexible(
+                      flex: 1,
+                      child: Text(
                         'Fetching orders...',
                         style: TextStyle(
                           fontSize: 30,
                           color: Theme.of(context).primaryColor,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             );
@@ -76,10 +79,17 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Lottie.asset(
-                        './assets/animations/empty_box.json',
-                        repeat: false,
-                      ),
+                      if (MediaQuery.of(context).orientation ==
+                          Orientation.portrait)
+                        Lottie.asset(
+                          './assets/animations/empty_box.json',
+                          repeat: false,
+                        ),
+                      if (MediaQuery.of(context).orientation ==
+                          Orientation.landscape)
+                        Lottie.asset('./assets/animations/empty_box.json',
+                            repeat: false,
+                            height: MediaQuery.of(context).size.height / 3),
                       Text(
                         'Not placed any orders yet.',
                         style: TextStyle(
