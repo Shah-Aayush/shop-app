@@ -171,6 +171,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
           duration: Duration(milliseconds: 100),
           opacity: fabIsVisible ? 1 : 0,
           child: Container(
+            margin: EdgeInsets.only(bottom: 30),
             padding: EdgeInsets.symmetric(horizontal: 20),
             // alignment: Alignment.bottomCenter,
             child: Row(
@@ -226,22 +227,27 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
           SliverAppBar(
             expandedHeight: MediaQuery.of(context).size.height / 3,
             pinned: true,
+            centerTitle: true,
             flexibleSpace: FlexibleSpaceBar(
               title: Container(
-                  padding: EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                    // color: Colors.black54,
-                    gradient: LinearGradient(
-                      colors: [Colors.purple, Colors.purple.withOpacity(0.1)],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(5),
-                      topRight: Radius.circular(5),
-                    ),
+                padding: EdgeInsets.symmetric(horizontal: 3),
+                decoration: BoxDecoration(
+                  // color: Colors.black54,
+                  gradient: LinearGradient(
+                    colors: [Colors.purple, Colors.purple.withOpacity(0.1)],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
-                  child: Text(loadedProduct.title)),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(5),
+                    topRight: Radius.circular(5),
+                  ),
+                ),
+                child: Text(
+                  loadedProduct.title,
+                  textAlign: TextAlign.center,
+                ),
+              ),
               background: Hero(
                 transitionOnUserGestures: true,
                 tag: loadedProduct.id,
