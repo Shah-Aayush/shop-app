@@ -103,28 +103,30 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       ),
       drawer: AppDrawer(),
       body: _isLoading
-          ? SingleChildScrollView(
-              child: Center(
-                child: Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Lottie.asset(
+          ? Center(
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      flex: 1,
+                      child: Lottie.asset(
                         'assets/animations/loading_paperplane.json',
-                        width: MediaQuery.of(context).size.width / 1.5,
-                        // height: 400,
                       ),
-                      Text(
+                    ),
+                    Flexible(
+                      flex: 1,
+                      child: Text(
                         'Fetching products...',
                         style: TextStyle(
                           fontSize: 30,
                           color: Theme.of(context).primaryColor,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             )
@@ -153,4 +155,35 @@ SliverGridDelegateWithMaxCrossAxisExtent(
         crossAxisSpacing: 20, //spacing between children
         mainAxisSpacing: 20, //spacing between children
       )
+*/
+
+/*
+//OLD BODY : 
+body: _isLoading
+          ? SingleChildScrollView(
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Lottie.asset(
+                        'assets/animations/loading_paperplane.json',
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        // height: 400,
+                      ),
+                      Text(
+                        'Fetching products...',
+                        style: TextStyle(
+                          fontSize: 30,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          : ProductsGrid(_showOnlyFavorites),
 */

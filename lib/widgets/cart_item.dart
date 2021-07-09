@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../providers/cart_provider.dart';
+import '../screens/product_detail_screen.dart';
 
 class CartItem extends StatelessWidget {
   final String id;
@@ -82,63 +84,71 @@ class CartItem extends StatelessWidget {
           color: Theme.of(context).errorColor,
         ),
       ),
-      child: Card(
-        margin: EdgeInsets.symmetric(vertical: 4, horizontal: 15),
-        child: Padding(
-          padding: EdgeInsets.all(8),
-          child: ListTile(
-            leading: CircleAvatar(
-              child: Padding(
-                  padding: EdgeInsets.all(3),
-                  child: FittedBox(child: Text('\$$price'))),
-            ),
-            title: Text(title),
-            subtitle: Text(
-                'Total : \$${double.parse((price * quantity).toStringAsFixed(2))}'),
-            // trailing: Text('$quantity x'),
-            // trailing: Wrap(
-            //   spacing: 2,
-            //   children: [
-            //     Spacer(),
-            // TextButton(onPressed: () {}, child: Text('-')),
-            // TextButton(onPressed: () {}, child: Text('+')),
-            //   ],
-            // ),
-            trailing: FittedBox(
-              fit: BoxFit.fill,
-              child: Row(
-                children: <Widget>[
-                  SizedBox(
-                      width: 25,
-                      child: TextButton(
-                          onPressed: () {
-                            cart.decreaseQuantity(id);
-                            if (quantity == 1) {
-                              cart.removeItem(id);
-                            }
-                          },
-                          child: Text(
-                            '-',
-                            textAlign: TextAlign.center,
-                          ))),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Text('$quantity'),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  SizedBox(
-                      width: 25,
-                      child: TextButton(
-                          onPressed: () {
-                            cart.increaseQuantity(id);
-                          },
-                          child: Text(
-                            '+',
-                            textAlign: TextAlign.center,
-                          ))),
-                ],
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context).pushNamed(
+            ProductDetailScreen.routeName,
+            arguments: id,
+          );
+        },
+        child: Card(
+          margin: EdgeInsets.symmetric(vertical: 4, horizontal: 15),
+          child: Padding(
+            padding: EdgeInsets.all(8),
+            child: ListTile(
+              leading: CircleAvatar(
+                child: Padding(
+                    padding: EdgeInsets.all(3),
+                    child: FittedBox(child: Text('\$$price'))),
+              ),
+              title: Text(title),
+              subtitle: Text(
+                  'Total : \$${double.parse((price * quantity).toStringAsFixed(2))}'),
+              // trailing: Text('$quantity x'),
+              // trailing: Wrap(
+              //   spacing: 2,
+              //   children: [
+              //     Spacer(),
+              // TextButton(onPressed: () {}, child: Text('-')),
+              // TextButton(onPressed: () {}, child: Text('+')),
+              //   ],
+              // ),
+              trailing: FittedBox(
+                fit: BoxFit.fill,
+                child: Row(
+                  children: <Widget>[
+                    SizedBox(
+                        width: 25,
+                        child: TextButton(
+                            onPressed: () {
+                              cart.decreaseQuantity(id);
+                              if (quantity == 1) {
+                                cart.removeItem(id);
+                              }
+                            },
+                            child: Text(
+                              '-',
+                              textAlign: TextAlign.center,
+                            ))),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text('$quantity'),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    SizedBox(
+                        width: 25,
+                        child: TextButton(
+                            onPressed: () {
+                              cart.increaseQuantity(id);
+                            },
+                            child: Text(
+                              '+',
+                              textAlign: TextAlign.center,
+                            ))),
+                  ],
+                ),
               ),
             ),
           ),

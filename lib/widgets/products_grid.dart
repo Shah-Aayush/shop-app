@@ -19,10 +19,15 @@ class ProductsGrid extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Lottie.asset(
-              './assets/animations/empty_box.json',
-              repeat: false,
-            ),
+            if (MediaQuery.of(context).orientation == Orientation.portrait)
+              Lottie.asset(
+                './assets/animations/empty_box.json',
+                repeat: false,
+              ),
+            if (MediaQuery.of(context).orientation == Orientation.landscape)
+              Lottie.asset('./assets/animations/empty_box.json',
+                  repeat: false,
+                  height: MediaQuery.of(context).size.height / 3),
             Text(
               'You have no favorites yet.',
               style: TextStyle(

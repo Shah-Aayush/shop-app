@@ -400,7 +400,10 @@ class _AnimatedAuthScreenState extends State<AnimatedAuthScreen>
                         SizedBox(height: 10),
                         //LoginButton
                         if (_isLoading)
-                          CircularProgressIndicator()
+                          if (Platform.isAndroid)
+                            CircularProgressIndicator()
+                          else
+                            CupertinoActivityIndicator()
                         else
                           InkWell(
                             onTap: _submit,
@@ -616,7 +619,10 @@ class _AnimatedAuthScreenState extends State<AnimatedAuthScreen>
                           SizedBox(height: 10),
                           //RegisterButton
                           if (_isLoading)
+                            if (Platform.isAndroid)
                             CircularProgressIndicator()
+                          else
+                            CupertinoActivityIndicator()
                           else
                             InkWell(
                               onTap: _submit,

@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/rendering.dart';
 
 import '../models/order_item.dart' as ord;
+import '../screens/product_detail_screen.dart';
 // import '../providers/orders_provider.dart';
 
 class OrderItem extends StatefulWidget {
@@ -145,25 +146,33 @@ class _OrderItemState extends State<OrderItem> with TickerProviderStateMixin {
                         child: ListView(
                           children: widget.order.products
                               .map(
-                                (product) => Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      product.title,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
+                                (product) => GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).pushNamed(
+                                      ProductDetailScreen.routeName,
+                                      arguments: product.id,
+                                    );
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        product.title,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      '${product.quantity} x \$${product.price}',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.grey,
-                                      ),
-                                    )
-                                  ],
+                                      Text(
+                                        '${product.quantity} x \$${product.price}',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.grey,
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               )
                               .toList(),
