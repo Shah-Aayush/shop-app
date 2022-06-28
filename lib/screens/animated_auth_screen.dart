@@ -191,7 +191,8 @@ class _AnimatedAuthScreenState extends State<AnimatedAuthScreen>
   @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+        overlays: [SystemUiOverlay.bottom, SystemUiOverlay.top]);
 
     animationController =
         AnimationController(vsync: this, duration: animationDuration);
@@ -620,9 +621,9 @@ class _AnimatedAuthScreenState extends State<AnimatedAuthScreen>
                           //RegisterButton
                           if (_isLoading)
                             if (Platform.isAndroid)
-                            CircularProgressIndicator()
-                          else
-                            CupertinoActivityIndicator()
+                              CircularProgressIndicator()
+                            else
+                              CupertinoActivityIndicator()
                           else
                             InkWell(
                               onTap: _submit,
