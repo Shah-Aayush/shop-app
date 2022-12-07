@@ -221,10 +221,9 @@ class _AuthCardState extends State<AuthCard> {
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
-                      ),
+                      ), backgroundColor: Theme.of(context).primaryColor,
                       padding:
                           EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
-                      primary: Theme.of(context).primaryColor,
                       // primary: Theme.of(context).primaryTextTheme.button.color,
                     ),
                   ),
@@ -233,11 +232,10 @@ class _AuthCardState extends State<AuthCard> {
                       '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD'),
                   onPressed: _switchAuthMode,
                   style: TextButton.styleFrom(
-                    padding:
+                    foregroundColor: Theme.of(context).primaryColor, padding:
                         EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
                     tapTargetSize: MaterialTapTargetSize
-                        .shrinkWrap, //makes smaller and nicer button!
-                    primary: Theme.of(context).primaryColor,
+                        .shrinkWrap,
                   ),
                 ),
               ],

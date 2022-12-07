@@ -181,7 +181,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
                 Expanded(
                   child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      primary: cart.isPresentInCart(loadedProduct.id)
+                      backgroundColor: cart.isPresentInCart(loadedProduct.id)
                           ? lighten(Theme.of(context).colorScheme.secondary)
                           : Theme.of(context).colorScheme.secondary,
                     ),
